@@ -1,0 +1,6 @@
+Metadata-Version: 2.4
+Name: rsHRF
+Version: 1.5.8
+Summary: original version installed with pip
+Author-email: Cindy <blahblah@gmail.com>
+Requires-Dist: numpy>=1.22

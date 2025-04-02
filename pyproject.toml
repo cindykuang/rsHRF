@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rsHRF"
+version = "1.5.8"
+description = "original version installed with pip"
+authors = [
+    { name = "Cindy", email = "blahblah@gmail.com" }
+]
+dependencies = [
+    "numpy>=1.22"
+]
+
