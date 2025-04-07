@@ -26,11 +26,16 @@ def compute_hrf(bold_sig, para, temporal_mask, p_jobs, bf = None):
     results = Parallel(n_jobs=p_jobs)(delayed(estimate_hrf)(data, i, para,
                                   N, bf) for i in range(nvar))
     beta_hrf, event_bold = zip(*results)
+    print("Number of regions:", len(beta_hrf))
+    for i, bhrf in enumerate(beta_hrf):
+        print(f"Region {i} beta_hrf type: {type(bhrf)}, shape/length: {np.shape(bhrf) if isinstance(bhrf, np.ndarray) else len(bhrf)}")
+    for i, bold in enumerate(event_bold):
+        print(f"Region {i} event_bold type: {type(bold)}, shape/length: {np.shape(bold) if isinstance(bold, np.ndarray) else len(bold)}")
     try:
         shutil.rmtree(folder)
     except:
         print("Failed to delete: " + folder)
-    return np.array(beta_hrf).T, np.array(event_bold)
+    return np.array(beta_hrf).T, list(event_bold) #np.array, changed
 
 def estimate_hrf(bold_sig, i, para, N, bf = None):
     """
@@ -80,10 +85,11 @@ def wgr_glm_estimation(dat, u, bf, T, T0, AR_lag):
     """
     @u - BOLD event vector (microtime).
     """
+    dat_reshaped = dat.flatten() #changed
     nscans = dat.shape[0]
     x = wgr_onset_design(u, bf, T, T0, nscans)
     X = np.append(x, np.ones((nscans, 1)), axis=1)
-    res_sum, Beta = sFIR.smooth_fir.wgr_glsco(X, dat, AR_lag=AR_lag)
+    res_sum, Beta = sFIR.smooth_fir.wgr_glsco(X, dat_reshaped, AR_lag=AR_lag) #changed
     return np.real(res_sum), Beta
 
 def wgr_hrf_fit(dat, xBF, u, bf):
