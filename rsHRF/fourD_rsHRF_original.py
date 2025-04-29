@@ -131,13 +131,6 @@ def demo_rsHRF(input_file, mask_file, output_dir, para, p_jobs, file_type=".nii"
         sub_save_dir = output_dir
     if not os.path.isdir(sub_save_dir):
         os.makedirs(sub_save_dir, exist_ok=True)
-        
-    # right before saving: upsample hrfa for model #this whole section is added - changed
-    if 'upsampling_factor' in para or para['upsampling_factor'] != None:
-    	hrfa_t = hrfa.T
-    	upsample=lambda x : signal.resample_poly(x[::-1], para['upsampling_factor'], hrfa_t.shape[1])
-    	hrfa = np.apply_along_axis(upsample, 1, hrfa_t)
-    	
     dic = {'para': para, 'hrfa': hrfa, 'event_bold': event_bold, 'PARA': PARA}
     ext = '_hrf.mat'
     if mode == "time-series":
@@ -178,8 +171,7 @@ def demo_rsHRF(input_file, mask_file, output_dir, para, p_jobs, file_type=".nii"
             break 
         pos += 1
     event_plot = lil_matrix((1, nobs))
-    #if event_bold.size: # changed
-    if event_bold and (isinstance(event_bold, list) or event_bold.size): # changed, added
+    if event_bold.size:
         event_plot[:, event_bold[pos]] = 1
     else:
         print("No Events Detected!")

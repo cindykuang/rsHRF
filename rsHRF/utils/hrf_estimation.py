@@ -7,7 +7,7 @@ from scipy.sparse import lil_matrix
 from joblib       import load, dump
 from joblib       import Parallel, delayed
 from rsHRF        import processing, sFIR
-from ..processing import knee
+from ..processing import knee, rest_filter #changed
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -15,6 +15,64 @@ warnings.filterwarnings("ignore")
 """
 HRF ESTIMATION
 """
+
+
+# def compute_hrf(bold_sig, para, temporal_mask, p_jobs, bf = None):
+#     para['temporal_mask'] = temporal_mask
+#     N, nvar = bold_sig.shape
+    
+#     # filter once for entire dataset - more efficient
+#     bold_sig_filt = rest_filter.rest_IdealFilter(bold_sig, para['TR'], para['passband'])  #changed, added
+    
+#     folder = tempfile.mkdtemp()
+#     data_folder = os.path.join(folder, 'data')
+    
+#     filtered_data_folder = os.path.join(folder, 'filtered_data') #changed, added
+    
+#     dump(bold_sig, data_folder) 
+#     dump(bold_sig_filt, filtered_data_folder) #changed, added
+    
+#     data = load(data_folder, mmap_mode='r')
+#     filtered_data = load(filtered_data_folder, mmap_mode='r') #changed, added
+    
+#     results = Parallel(n_jobs=p_jobs)(delayed(estimate_hrf)(data, filtered_data, i, para, #changed
+#                                   N, bf) for i in range(nvar))
+#     beta_hrf, event_bold = zip(*results)
+#     print("Number of regions:", len(beta_hrf))
+#     for i, bhrf in enumerate(beta_hrf):
+#         print(f"Region {i} beta_hrf type: {type(bhrf)}, shape/length: {np.shape(bhrf) if isinstance(bhrf, np.ndarray) else len(bhrf)}")
+#     for i, bold in enumerate(event_bold):
+#         print(f"Region {i} event_bold type: {type(bold)}, shape/length: {np.shape(bold) if isinstance(bold, np.ndarray) else len(bold)}")
+#     try:
+#         shutil.rmtree(folder)
+#     except:
+#         print("Failed to delete: " + folder)
+#     return np.array(beta_hrf).T, list(event_bold) #np.array, changed
+
+# def estimate_hrf(bold_sig, bold_sig_filt, i, para, N, bf = None): #changed
+#     """
+#     Estimate HRF
+#     """
+#     dat = bold_sig[:, i] 
+#     dat_filt = bold_sig_filt[:, i] #changed, added
+#     localK = para['localK']
+#     if para['estimation'] == 'sFIR' or para['estimation'] == 'FIR':
+#         #Estimate HRF for the sFIR or FIR basis functions
+#         if np.count_nonzero(para['thr']) == 1:
+#             para['thr'] = np.array([para['thr'], np.inf])
+#         thr = para['thr'] #Thr is a vector for (s)FIR
+#         u = wgr_BOLD_event_vector(N, dat_filt, thr, localK, para['temporal_mask']) #changed, use filtered data for event detection
+#         u = u.toarray().flatten('C').ravel().nonzero()[0]
+#         beta_hrf, event_bold = sFIR.smooth_fir.wgr_FIR_estimation_HRF(u, dat, para, N) #use unfiltered data for HRF fitting
+#     else:
+#         thr = [para['thr']] #Thr is a scalar for the basis functions
+#         u0 = wgr_BOLD_event_vector(N, dat_filt, thr, localK, para['temporal_mask']) #changed, use filtered data for event detection
+#         u = np.append(u0.toarray(), np.zeros((para['T'] - 1, N)), axis=0)
+#         u = np.reshape(u, (1, - 1), order='F')
+#         beta_hrf = wgr_hrf_fit(dat, para, u, bf) #use unfiltered data for HRF fitting
+#         u = u0.toarray()[0].nonzero()[0]
+#     return beta_hrf, u
+
 
 def compute_hrf(bold_sig, para, temporal_mask, p_jobs, bf = None):
     para['temporal_mask'] = temporal_mask
@@ -27,10 +85,6 @@ def compute_hrf(bold_sig, para, temporal_mask, p_jobs, bf = None):
                                   N, bf) for i in range(nvar))
     beta_hrf, event_bold = zip(*results)
     print("Number of regions:", len(beta_hrf))
-    for i, bhrf in enumerate(beta_hrf):
-        print(f"Region {i} beta_hrf type: {type(bhrf)}, shape/length: {np.shape(bhrf) if isinstance(bhrf, np.ndarray) else len(bhrf)}")
-    for i, bold in enumerate(event_bold):
-        print(f"Region {i} event_bold type: {type(bold)}, shape/length: {np.shape(bold) if isinstance(bold, np.ndarray) else len(bold)}")
     try:
         shutil.rmtree(folder)
     except:

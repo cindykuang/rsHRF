@@ -125,9 +125,7 @@ def get_parser():
 
     group_para.add_argument('--wiener', action='store_true',
                             help='to perform iterative wiener deconvolution')
-                            
-    group_para.add_argument('--upsampling_factor', action='store', type=int, 
-                            help='upsampling factor for final hrf output') #added, changed
+
     return parser
 
 
@@ -182,7 +180,7 @@ def run_rsHRF():
     if args.atlas is not None and (not args.atlas.endswith(('.nii', '.nii.gz','.gii', '.gii.gz'))):
         parser.error('--atlas should end with .gii, .gii.gz, .nii or .nii.gz')
 
-    if args.ts is not None and (not args.ts.endswith(('.txt', '.csv', '.npy'))): #changed, added 'csv' and 'npy'
+    if args.ts is not None and (not args.ts.endswith(('.txt'))):
         parser.error('--ts file should end with .txt')
 
     if args.temporal_mask is not None and (not args.temporal_mask.endswith(('.dat'))):

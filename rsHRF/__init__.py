@@ -1,3 +1,5 @@
+from ._version import __version__ #added, changed
+
 import rsHRF.spm_dep
 import rsHRF.processing
 import rsHRF.canon
@@ -8,3 +10,4 @@ import rsHRF.CLI
 __all__ = ["spm_dep", "processing", "canon", "utils",
            "sFIR", "parameters",   "basis_functions",
            "fourD_rsHRF.py", "CLI.py", "iterative_wiener_deconv"]
+

@@ -31,6 +31,8 @@ def rsHRF_iterative_wiener_deconv(y, h, Iterations=1000):
         id0 = idm 
     else:
         id0 = idx 
+    if id0+1 >= Sf.shape[1]: #changed, added 
+    	id0 = Sf.shape[1] - 2  # Use second-to-last column as fallback #changed, added
     Pxx             = Sf[:,id0+1]
     WienerFilterEst = np.divide(np.multiply(np.conj(H), Pxx), np.add(np.multiply(np.square(abs(H)), Pxx), Nf))
     return np.real(np.fft.ifft(np.multiply(WienerFilterEst, Y)))
