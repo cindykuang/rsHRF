@@ -133,7 +133,7 @@ def demo_rsHRF(input_file, mask_file, output_dir, para, p_jobs, file_type=".nii"
         os.makedirs(sub_save_dir, exist_ok=True)
         
     # right before saving: upsample hrfa for model #this whole section is added - changed
-    #if 'upsampling_factor' in para or para['upsampling_factor'] != None:
+    #if 'upsampling_factor' in para and para['upsampling_factor'] != None:
     	#hrfa_t = hrfa.T
     	#upsample=lambda x : signal.resample_poly(x[::-1], para['upsampling_factor'], hrfa_t.shape[1])
     	#hrfa = np.apply_along_axis(upsample, 1, hrfa_t)

@@ -126,8 +126,8 @@ def get_parser():
     group_para.add_argument('--wiener', action='store_true',
                             help='to perform iterative wiener deconvolution')
                             
-    group_para.add_argument('--upsampling_factor', action='store', type=int, 
-                            help='upsampling factor for final hrf output') #added, changed
+    #group_para.add_argument('--upsampling_factor', action='store', type=int, 
+                            #help='upsampling factor for final hrf output') #added, changed
     return parser
 
 
