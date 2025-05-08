@@ -80,9 +80,9 @@ def demo_rsHRF(input_file, mask_file, output_dir, para, p_jobs, file_type=".nii"
     bold_sig_deconv = processing. \
                       rest_filter. \
                       rest_IdealFilter(bold_sig, para['TR'], para['passband_deconvolve'])   
-    #bold_sig = processing. \
-               #rest_filter. \
-               #rest_IdealFilter(bold_sig, para['TR'], para['passband'])   
+    bold_sig = processing. \
+               rest_filter. \
+               rest_IdealFilter(bold_sig, para['TR'], para['passband'])   
     data_deconv  = np.zeros(bold_sig.shape)
     event_number = np.zeros((1, bold_sig.shape[1]))
     print('Retrieving HRF ...')
