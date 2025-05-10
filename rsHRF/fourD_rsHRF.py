@@ -77,12 +77,13 @@ def demo_rsHRF(input_file, mask_file, output_dir, para, p_jobs, file_type=".nii"
     if len(temporal_mask) > 0 and len(temporal_mask) != nobs:
             raise ValueError ('Inconsistency in temporal_mask dimensions.\n' + 'Size of mask: ' + str(len(temporal_mask)) + '\n' + 'Size of time-series: ' + str(nobs))
     bold_sig = np.nan_to_num(bold_sig)
+    bold_sig_deconv = bold_sig
     bold_sig_deconv = processing. \
                       rest_filter. \
                       rest_IdealFilter(bold_sig, para['TR'], para['passband_deconvolve'])   
-    bold_sig = processing. \
-               rest_filter. \
-               rest_IdealFilter(bold_sig, para['TR'], para['passband'])   
+    #bold_sig = processing. \
+               #rest_filter. \
+               #rest_IdealFilter(bold_sig, para['TR'], para['passband'])   
     data_deconv  = np.zeros(bold_sig.shape)
     event_number = np.zeros((1, bold_sig.shape[1]))
     print('Retrieving HRF ...')
